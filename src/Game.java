@@ -1,10 +1,10 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import Components.Cactus;
-import Components.Frame;
-import Components.Ground;
-import Components.TRex;
+import GameComponents.Cactus;
+import GameComponents.Frame;
+import GameComponents.Ground;
+import GameComponents.TRex;
 
 public class Game implements KeyListener 
 {
