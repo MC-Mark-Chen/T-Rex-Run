@@ -1,7 +1,6 @@
 package GameComponents;
 import java.awt.Component;
 import java.awt.LayoutManager;
-
 import javax.swing.JFrame;
 
 public class Frame extends JFrame
@@ -15,11 +14,16 @@ public class Frame extends JFrame
 
     public Frame()
     {
+		init();
+    }
+
+	private void init()
+	{
 		setTitle(FRAME_TITLE);
 		setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		setLayout(PANEL_LAYOUT);
 		setLocationRelativeTo(LOCATION_RELATIVE_COMPONENT);
 		setResizable(RESIZABILITY);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+	}
 }

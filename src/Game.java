@@ -1,5 +1,7 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Random;
 
 import GameComponents.Cactus;
 import GameComponents.Frame;
@@ -8,17 +10,34 @@ import GameComponents.TRex;
 
 public class Game implements KeyListener 
 {
+	private final int CACTUS_INIT_X_COORDINATE = 900;
+	private final int CACTUS_START_X_COORDINATE = 916;
+
 	private Frame frame;
 	private TRex tRex;
 	private Cactus cactus;
 	private Ground ground;
 
+	private ArrayList<Cactus> cactusList;
+	private Random random;
+	private Thread thread;
+
+	private boolean gameOn;
+	private int idx;
+	private int cactusCurrentX;
+
     Game()
 	{
 		frame = new Frame();
 		tRex = new TRex();
-		cactus = new Cactus();
+		cactus = new Cactus(CACTUS_START_X_COORDINATE);
 		ground = new Ground();
+		cactusList = new ArrayList<Cactus>();
+		random = new Random();
+		gameOn = false;
+		idx = -1;
+		cactusCurrentX = CACTUS_START_X_COORDINATE;
+		thread = new Thread(cactus);
 
 		init();
 	}
@@ -27,14 +46,14 @@ public class Game implements KeyListener
 	{
 		frame.addKeyListener(this);
 		frame.add(tRex);
-		frame.add(cactus);
 		frame.add(ground);
+		frame.add(cactus);
 		frame.setVisible(true);
 	}	
 
 	public void begin()
     {
-		
+		thread.start();
 	}
 
     @Override
@@ -42,7 +61,7 @@ public class Game implements KeyListener
 	{
         if(e.getKeyCode() == KeyEvent.VK_SPACE)
         {
-            
+
         }
     }
 
@@ -54,7 +73,7 @@ public class Game implements KeyListener
 
 	public static void main(String[] args)
 	{
-		Game start = new Game();
-		start.begin();
+		Game game = new Game();
+		game.begin();
 	}
 }

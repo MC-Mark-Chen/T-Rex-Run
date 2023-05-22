@@ -1,7 +1,6 @@
 package GameComponents;
 import java.awt.Color;
 import java.awt.LayoutManager;
-
 import javax.swing.JPanel;
 
 public class Ground extends JPanel
