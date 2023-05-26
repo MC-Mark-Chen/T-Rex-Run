@@ -1,6 +1,8 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import javax.swing.KeyStroke;
 import java.util.Random;
 
 import GameComponents.Cactus;
@@ -8,68 +10,90 @@ import GameComponents.Frame;
 import GameComponents.Ground;
 import GameComponents.TRex;
 
-public class Game implements KeyListener 
+public class Game
 {
-	private final int CACTUS_INIT_X_COORDINATE = 900;
-	private final int CACTUS_START_X_COORDINATE = 916;
-
 	private Frame frame;
 	private TRex tRex;
-	private Cactus cactus;
 	private Ground ground;
 
-	private ArrayList<Cactus> cactusList;
+	private ArrayList<Cactus> cactusObjectList;			//to store potential cactus objects
+	private ArrayList<Thread> cactusThreadList;
 	private Random random;
-	private Thread thread;
-
-	private boolean gameOn;
-	private int idx;
-	private int cactusCurrentX;
+	private Thread tRexThread;
+	private Action jumpAction;
+	private boolean isGaming;
 
     Game()
 	{
+		random = new Random();
+
 		frame = new Frame();
 		tRex = new TRex();
-		cactus = new Cactus(CACTUS_START_X_COORDINATE);
 		ground = new Ground();
-		cactusList = new ArrayList<Cactus>();
-		random = new Random();
-		gameOn = false;
-		idx = -1;
-		cactusCurrentX = CACTUS_START_X_COORDINATE;
-		thread = new Thread(cactus);
+
+		cactusObjectList = new ArrayList<Cactus>();
+		cactusThreadList = new ArrayList<Thread>();
+		tRexThread = new Thread(tRex);
+
+		jumpAction = new JumpAction();
+
+		isGaming = false;
 
 		init();
 	}
 
 	private void init()
 	{
-		frame.addKeyListener(this);
 		frame.add(tRex);
 		frame.add(ground);
-		frame.add(cactus);
 		frame.setVisible(true);
+
+		tRex.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jumpAction");
+		tRex.getActionMap().put("jumpAction", jumpAction);
 	}	
 
 	public void begin()
     {
-		thread.start();
+		isGaming = true;
+		while(isGaming)
+		{
+			Cactus cactusObject = new Cactus();
+			frame.add(cactusObject);
+			cactusObjectList.add(cactusObject);
+			Thread cactusThread = new Thread(cactusObject);
+			cactusThreadList.add(cactusThread);
+			cactusThread.start();
+
+			if(tRex.isTouching(cactusObjectList))
+			{
+				if(cactusThreadList.size() / 2 == 0)
+				{
+					for(int i = cactusObjectList.size() / 2; i >= 0; i--)
+					{
+						cactusThreadList.get(i).interrupt();
+					}
+				}
+				for(int i = cactusObjectList.size() - 1; i >= 0; i--)
+				{
+					cactusThreadList.get(i).interrupt();
+				}
+				break;
+			}
+
+			try {
+				Thread.sleep(random.nextInt(1401) + 600);
+			} catch (InterruptedException e) {}
+		}
 	}
 
-    @Override
-    public void keyPressed(KeyEvent e) 
+	public class JumpAction extends AbstractAction
 	{
-        if(e.getKeyCode() == KeyEvent.VK_SPACE)
-        {
-
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            tRexThread.start();
+			tRexThread = new Thread(tRex);
         }
-    }
-
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
+	}
 
 	public static void main(String[] args)
 	{
