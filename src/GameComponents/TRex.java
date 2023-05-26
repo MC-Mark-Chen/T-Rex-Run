@@ -1,40 +1,71 @@
 package GameComponents;
-import java.awt.LayoutManager;
+import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-public class TRex extends JPanel
+public class TRex extends JLabel implements Runnable
 {
-    private final String IMAGE_PATH = "/Users/mark/Library/CloudStorage/OneDrive-个人/AP CSA/Coding Assignments/FinalProject1Resources/TRex.jpg";
-    private final int ORIGIN_COORDINATE = 0;
-    private final int TREX_WIDTH = 50;
-    private final int TREX_HEIGHT = 53;
+    private final static String IMAGE_PATH = "src/GameComponents/TRex.png";
+    private final static ImageIcon IMAGE = new ImageIcon(IMAGE_PATH);
+    private final int TREX_WIDTH = 50;          //trex image width
+    private final int TREX_HEIGHT = 53;         //trex image height
     private final int TREX_X_COORDINATE = 50;
-    private final LayoutManager PANEL_LAYOUT = null;
+    private final int TREX_Y_COORDINATE = 250;
 
-    private int tRexYCoordinate;
-
-    private ImageIcon image;
-    private JLabel label;
+    private int distanceToGo;           //distance between jumping peak point and current position
+    private int moveDistance;           //moving distance of each movement
+    private int sleepTime;          //sleepTime bettween travelling to the next pixel point
 
     public TRex()
     {
-        image = new ImageIcon(IMAGE_PATH);
-        label = new JLabel(image);
+        super(IMAGE);
 
-        tRexYCoordinate = 250;
+        distanceToGo = 85;
+        moveDistance = 2;
+        sleepTime = 3;
 
         init();
     }
 
     private void init()
     {
-        label.setBounds(ORIGIN_COORDINATE, ORIGIN_COORDINATE, TREX_WIDTH, TREX_HEIGHT);
+        setLayout(null);
+        setBounds(TREX_X_COORDINATE, TREX_Y_COORDINATE, TREX_WIDTH, TREX_HEIGHT);
+    }
 
-        setLayout(PANEL_LAYOUT);
-        
-        setBounds(TREX_X_COORDINATE, tRexYCoordinate, TREX_WIDTH, TREX_HEIGHT);
-        add(label);
+    public boolean isTouching(ArrayList<Cactus> arrl)
+    {
+        for(int i = 0; i < arrl.size(); i++)
+        {
+            if((getX() >= arrl.get(i).getX() - 50) && (getX() <= arrl.get(i).getX() + 34))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void run() 
+    {
+        for(int i = 0; i < distanceToGo; i++)
+        {
+            setBounds(TREX_X_COORDINATE, getY() - moveDistance, TREX_WIDTH, TREX_HEIGHT);
+            try
+            {
+                Thread.sleep(sleepTime);
+            }
+            catch(InterruptedException e){}
+        }
+        while(getY() < 250)
+        {
+            setBounds(TREX_X_COORDINATE, getY() + moveDistance, TREX_WIDTH, TREX_HEIGHT);
+            try
+            {
+                Thread.sleep(sleepTime);
+            }
+            catch(InterruptedException e){}
+        }
     }
 }
