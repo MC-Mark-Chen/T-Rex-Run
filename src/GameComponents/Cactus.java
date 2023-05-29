@@ -20,7 +20,7 @@ public class Cactus extends JLabel implements Runnable
         super(IMAGE);
         distanceToGo = CACTUS_X_COORDINATE + 50;
         moveDistance = 1;
-        sleepTime = 3;
+        sleepTime = 2;
 
         init();
     }
@@ -30,22 +30,23 @@ public class Cactus extends JLabel implements Runnable
         setLayout(null);
         setBounds(CACTUS_X_COORDINATE, CACTUS_Y_COORDINATE, CACTUS_WIDTH, CACTUS_HEIGHT);
     }
-
+ 
     @Override
     public void run() 
     {   
         for(int i = 0; i < distanceToGo; i++)
         {
             setLocation(getX() - moveDistance, CACTUS_Y_COORDINATE);
-            if(Thread.currentThread().isInterrupted())
-            {
-                return;
-            }
             try
             {
                 Thread.sleep(sleepTime);
             }
-            catch(InterruptedException e){}
+            catch(InterruptedException e)
+            {
+                System.out.println(Thread.currentThread().getName() + " interrupted");
+                return;
+            }
         }
+        System.out.println(Thread.currentThread().getName() + " is dead");
     }
 }

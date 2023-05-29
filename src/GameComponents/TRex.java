@@ -1,6 +1,6 @@
 package GameComponents;
+import java.awt.geom.Area;
 import java.util.ArrayList;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -13,17 +13,20 @@ public class TRex extends JLabel implements Runnable
     private final int TREX_X_COORDINATE = 50;
     private final int TREX_Y_COORDINATE = 250;
 
-    private int distanceToGo;           //distance between jumping peak point and current position
-    private int moveDistance;           //moving distance of each movement
     private int sleepTime;          //sleepTime bettween travelling to the next pixel point
+    private double startTime;         //the time when the run() method begins
+    private double timeInterval;          //the unit time for the TRex to move a unit distance
+    private double newYCoordinate;          //new y coordinate after each unit time
+    private Area areaTRex;
+    private Area areaCactus;
 
     public TRex()
     {
         super(IMAGE);
 
-        distanceToGo = 85;
-        moveDistance = 2;
-        sleepTime = 3;
+        sleepTime = 1;
+        startTime = 0;
+        newYCoordinate = 0;
 
         init();
     }
@@ -34,11 +37,15 @@ public class TRex extends JLabel implements Runnable
         setBounds(TREX_X_COORDINATE, TREX_Y_COORDINATE, TREX_WIDTH, TREX_HEIGHT);
     }
 
-    public boolean isTouching(ArrayList<Cactus> arrl)
+    public boolean isColliding(ArrayList<Cactus> arrl)
     {
         for(int i = 0; i < arrl.size(); i++)
         {
-            if((getX() >= arrl.get(i).getX() - 50) && (getX() <= arrl.get(i).getX() + 34))
+            areaTRex = new Area(getBounds());
+            areaCactus = new Area(arrl.get(i).getBounds());
+            System.out.println(areaTRex.getBounds());
+            System.out.println(areaCactus.getBounds());
+            if(areaTRex.intersects(areaCactus.getBounds2D()))
             {
                 return true;
             }
@@ -49,18 +56,23 @@ public class TRex extends JLabel implements Runnable
     @Override
     public void run() 
     {
-        for(int i = 0; i < distanceToGo; i++)
+        startTime = System.nanoTime() * Math.pow(10, -9);
+        while(getY() > 165)
         {
-            setBounds(TREX_X_COORDINATE, getY() - moveDistance, TREX_WIDTH, TREX_HEIGHT);
+            timeInterval = System.nanoTime() * Math.pow(10, -9) - startTime;
+            newYCoordinate = TREX_Y_COORDINATE - Math.abs(85 * Math.sin(6 * timeInterval));
+            setLocation(TREX_X_COORDINATE, (int)newYCoordinate);
             try
             {
                 Thread.sleep(sleepTime);
             }
             catch(InterruptedException e){}
         }
-        while(getY() < 250)
+        while(getY() < 245)
         {
-            setBounds(TREX_X_COORDINATE, getY() + moveDistance, TREX_WIDTH, TREX_HEIGHT);
+            timeInterval = System.nanoTime() * Math.pow(10, -9) - startTime;
+            newYCoordinate = TREX_Y_COORDINATE - Math.abs(85 * Math.sin(6 * timeInterval));
+            setLocation(TREX_X_COORDINATE, (int)newYCoordinate);
             try
             {
                 Thread.sleep(sleepTime);

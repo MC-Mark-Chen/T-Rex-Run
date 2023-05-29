@@ -1,14 +1,9 @@
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import javax.swing.KeyStroke;
 import java.util.Random;
-
-import GameComponents.Cactus;
-import GameComponents.Frame;
-import GameComponents.Ground;
-import GameComponents.TRex;
+import GameComponents.*;
 
 public class Game
 {
@@ -16,8 +11,6 @@ public class Game
 	private TRex tRex;
 	private Ground ground;
 
-	private ArrayList<Cactus> cactusObjectList;			//to store potential cactus objects
-	private ArrayList<Thread> cactusThreadList;
 	private Random random;
 	private Thread tRexThread;
 	private Action jumpAction;
@@ -31,8 +24,6 @@ public class Game
 		tRex = new TRex();
 		ground = new Ground();
 
-		cactusObjectList = new ArrayList<Cactus>();
-		cactusThreadList = new ArrayList<Thread>();
 		tRexThread = new Thread(tRex);
 
 		jumpAction = new JumpAction();
@@ -49,47 +40,40 @@ public class Game
 		frame.setVisible(true);
 
 		tRex.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jumpAction");
-		tRex.getActionMap().put("jumpAction", jumpAction);
+		tRex.getActionMap().put("jumpAction", jumpAction); 
 	}	
 
 	public void begin()
     {
 		isGaming = true;
-		while(isGaming)
+		try
 		{
-			Cactus cactusObject = new Cactus();
-			frame.add(cactusObject);
-			cactusObjectList.add(cactusObject);
-			Thread cactusThread = new Thread(cactusObject);
-			cactusThreadList.add(cactusThread);
-			cactusThread.start();
-
-			if(tRex.isTouching(cactusObjectList))
+			while(isGaming)
 			{
-				if(cactusThreadList.size() / 2 == 0)
+				if(tRex.isColliding(frame.getCactusObjectList()))
 				{
-					for(int i = cactusObjectList.size() / 2; i >= 0; i--)
-					{
-						cactusThreadList.get(i).interrupt();
-					}
+					isGaming = false;
+					Thread.currentThread().interrupt();
+					System.out.println("main thread interrupting...");
+					frame.terminate();
 				}
-				for(int i = cactusObjectList.size() - 1; i >= 0; i--)
-				{
-					cactusThreadList.get(i).interrupt();
-				}
-				break;
-			}
-
-			try {
+				frame.display();
 				Thread.sleep(random.nextInt(1401) + 600);
-			} catch (InterruptedException e) {}
+			}
+		} 
+		catch (InterruptedException e) 
+		{
+			isGaming = false;
+			System.out.println("main thread interrupted");
+			return;
 		}
 	}
 
 	public class JumpAction extends AbstractAction
 	{
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) 
+		{
             tRexThread.start();
 			tRexThread = new Thread(tRex);
         }
