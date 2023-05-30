@@ -2,7 +2,7 @@ package GameComponents;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class Cactus extends JLabel implements Runnable
+public class Cactus extends TRex implements Runnable
 {
     private final static String IMAGE_PATH = "src/GameComponents/Cactus.png";
     private final static ImageIcon IMAGE = new ImageIcon(IMAGE_PATH);
