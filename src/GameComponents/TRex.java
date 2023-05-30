@@ -12,7 +12,6 @@ public class TRex extends JLabel implements Runnable
     private final int TREX_HEIGHT = 53;         //trex image height
     private final int TREX_X_COORDINATE = 50;
     private final int TREX_Y_COORDINATE = 250;
-
     private int sleepTime;          //sleepTime bettween travelling to the next pixel point
     private double startTime;         //the time when the run() method begins
     private double timeInterval;          //the unit time for the TRex to move a unit distance
@@ -30,7 +29,8 @@ public class TRex extends JLabel implements Runnable
 
         init();
     }
-
+    
+    public int get
     private void init()
     {
         setLayout(null);
@@ -39,7 +39,7 @@ public class TRex extends JLabel implements Runnable
 
     public boolean isColliding(ArrayList<Cactus> arrl)
     {
-        for(int i = 0; i < arrl.size(); i++)
+        for(int i = arrl.size() - 1; i >= 0; i--)
         {
             areaTRex = new Area(getBounds());
             areaCactus = new Area(arrl.get(i).getBounds());
