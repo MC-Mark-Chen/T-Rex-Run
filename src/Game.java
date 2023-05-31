@@ -1,5 +1,7 @@
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
+
 import java.awt.event.ActionEvent;
 import javax.swing.KeyStroke;
 import java.util.Random;
@@ -7,10 +9,12 @@ import GameComponents.*;
 
 public class Game
 {
+	private final static String IMAGE_PATH_TREX = "src/GameComponents/TRex.png";
+    private final static ImageIcon IMAGE_TREX = new ImageIcon(IMAGE_PATH_TREX);
+
 	private Frame frame;
 	private TRex tRex;
 	private Ground ground;
-
 	private Random random;
 	private Thread tRexThread;
 	private Action jumpAction;
@@ -19,15 +23,11 @@ public class Game
     Game()
 	{
 		random = new Random();
-
 		frame = new Frame();
-		tRex = new TRex();
+		tRex = new TRex(IMAGE_TREX);
 		ground = new Ground();
-
 		tRexThread = new Thread(tRex);
-
 		jumpAction = new JumpAction();
-
 		isGaming = false;
 
 		init();
@@ -38,7 +38,6 @@ public class Game
 		frame.add(tRex);
 		frame.add(ground);
 		frame.setVisible(true);
-
 		tRex.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jumpAction");
 		tRex.getActionMap().put("jumpAction", jumpAction); 
 	}	
@@ -50,13 +49,13 @@ public class Game
 		{
 			while(isGaming)
 			{
-				if(tRex.isColliding(frame.getCactusObjectList()))
-				{
-					isGaming = false;
-					Thread.currentThread().interrupt();
-					System.out.println("main thread interrupting...");
-					frame.terminate();
-				}
+				//if(tRex.isColliding(frame.getCactusObjectList()))
+				//{
+					// isGaming = false;
+					// Thread.currentThread().interrupt();
+					// System.out.println("main thread interrupting...");
+					// frame.terminate();
+				//}
 				frame.display();
 				Thread.sleep(random.nextInt(1401) + 600);
 			}

@@ -1,11 +1,9 @@
 package GameComponents;
+import java.awt.geom.Area;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
-public class Cactus extends TRex implements Runnable
+public class Cactus extends TRex
 {
-    private final static String IMAGE_PATH = "src/GameComponents/Cactus.png";
-    private final static ImageIcon IMAGE = new ImageIcon(IMAGE_PATH);
     private final int CACTUS_WIDTH = 34;            //cactus image width
     private final int CACTUS_HEIGHT = 70;           //cactus image height
     private final int CACTUS_Y_COORDINATE = 233;
@@ -14,10 +12,11 @@ public class Cactus extends TRex implements Runnable
     private int distanceToGo;       //distance between left edge and current position
     private int moveDistance;       //moving distance of each movement
     private int sleepTime;          //sleepTime bettween travelling to the next pixel point
+    private Area area;
 
-    public Cactus()
+    public Cactus(ImageIcon image)
     {
-        super(IMAGE);
+        super(image);
         distanceToGo = CACTUS_X_COORDINATE + 50;
         moveDistance = 1;
         sleepTime = 2;
@@ -28,7 +27,7 @@ public class Cactus extends TRex implements Runnable
     private void init()
     {
         setLayout(null);
-        setBounds(CACTUS_X_COORDINATE, CACTUS_Y_COORDINATE, CACTUS_WIDTH, CACTUS_HEIGHT);
+        this.setBounds(CACTUS_X_COORDINATE, CACTUS_Y_COORDINATE, CACTUS_WIDTH, CACTUS_HEIGHT);
     }
  
     @Override
@@ -36,7 +35,12 @@ public class Cactus extends TRex implements Runnable
     {   
         for(int i = 0; i < distanceToGo; i++)
         {
-            setLocation(getX() - moveDistance, CACTUS_Y_COORDINATE);
+            this.setLocation(getX() - moveDistance, CACTUS_Y_COORDINATE);
+            area = new Area(this.getBounds());
+            System.out.println("Cactus's bounds2D: " + this.area.getBounds2D());
+            if(super.getArea().intersects(area.getBounds2D())){
+                Thread.currentThread().interrupt();
+            }
             try
             {
                 Thread.sleep(sleepTime);
@@ -47,6 +51,7 @@ public class Cactus extends TRex implements Runnable
                 return;
             }
         }
+        
         System.out.println(Thread.currentThread().getName() + " is dead");
     }
 }
