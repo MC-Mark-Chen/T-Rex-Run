@@ -51,7 +51,6 @@ public class StartComponent extends Game implements ActionListener
 	{
 		if(e.getSource() == button)
 		{
-            //super.getFrame().getContentPane().removeAll();
             super.getFrame().getContentPane().remove(button);
             super.getFrame().getContentPane().remove(label);
             super.begin();

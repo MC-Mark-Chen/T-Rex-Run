@@ -47,7 +47,8 @@ public class TRex implements Runnable
         areaRight = new Area(rectangleRight.getBounds());
     }
 
-    public Area getLeftArea(){
+    public Area getLeftArea()
+    {
         return areaLeft;
     }
 
@@ -107,7 +108,8 @@ public class TRex implements Runnable
                 {
                     Thread.sleep(sleepTime);
                 }
-                catch(InterruptedException e){
+                catch(InterruptedException e)
+                {
                     System.out.println("TRex Thread interrupted");          //object will catch InterruptedExveption if it is asked to sleep while being interrupted
                     return;
                 }

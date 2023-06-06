@@ -15,12 +15,16 @@ public class Game
 
 	private Frame frame;
 	private JFrame frameObject;
+	
 	private TRex tRex;
 	private JLabel tRexObject;
 	private Thread tRexThread;
+
 	private Ground ground;
 	private JLabel groundObject;
+
 	private Random random;
+
 	private Action jumpAction;
 	private Action restartAction;
 
@@ -28,16 +32,18 @@ public class Game
 	{
 		frame = new Frame();
 		frameObject = frame.getFrame();
+
 		tRex = new TRex();
 		tRexObject = tRex.getLabel();
 		tRexThread = new Thread(tRex);
+
 		ground = new Ground();
 		groundObject = ground.getJLabel();
+
 		random = new Random();
+
 		jumpAction = new JumpAction();
 		restartAction = new RestartAction();
-
-		
 	}
 
 	public void begin()
@@ -47,15 +53,18 @@ public class Game
 		frameObject.getContentPane().add(groundObject);
 		frameObject.setVisible(true);
 
+		// Request focus on tRexObject, ensure that it receives the keystrokes and can respond to the corresponding actions correctly
 		tRexObject.requestFocusInWindow();
 
+		//assigning specific keys to motions: space & up arrow for jumping, R for restarting
 		tRexObject.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jumpAction");
 		tRexObject.getInputMap().put(KeyStroke.getKeyStroke("UP"), "jumpAction");
 		tRexObject.getActionMap().put("jumpAction", jumpAction); 
 		tRexObject.getInputMap().put(KeyStroke.getKeyStroke("R"), "restartAction");
 		tRexObject.getActionMap().put("restartAction", restartAction); 
 		
-		new Thread(()->{
+		new Thread(()->
+		{
 			isGaming = true;
 			startTime = System.currentTimeMillis();
 		
@@ -104,33 +113,33 @@ public class Game
         }
 	}
 
-	private class RestartAction extends AbstractAction {
+	private class RestartAction extends AbstractAction 
+	{
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			// Reset the game state
+		public void actionPerformed(ActionEvent e) 
+		{
+			//reset Game variables
 			isGaming = false;
 			startTime = 0;
 			endTime = 0;
-	
-			// Remove result labels from the frame
 			
+			//remove all GUI
 			frameObject.getContentPane().removeAll();
 			frameObject.getContentPane().repaint();
+
+			//add back the resultLabels
 			frameObject.getContentPane().add(Frame.resultLabel1);
 			frameObject.getContentPane().add(Frame.resultLabel2);
 			Frame.resultLabel1.setText("");
 			Frame.resultLabel2.setText("");
 	
-			// Reset the T-Rex position
+			//reinitialize tRex
 			tRex.reset();
 	
-			// Request focus on the T-Rex object
 			begin();
 		}
 	}
 	
-	
-
 	public static void main(String[] args)
 	{
 		new StartComponent();
