@@ -21,6 +21,7 @@ public class Cactus extends TRex
     private Area areaLeft;          //area of left rectangle covering the cactus
     private Area areaCenter;        //area of center rectangle covering the cactus
     private Area areaRight;         //area of right rectangle covering the cactus
+    //用了三个长方形，因为仙人掌的形状从左到右逐渐变高，用这些长方形来判断恐龙是否与仙人掌接触
     private Rectangle rectangleLeft;            //the left rectangle covering the cactus (17 * 52)
     private Rectangle rectangleCenter;          //the center rectangle covering the cactus (6 * 61)
     private Rectangle rectangleRight;           //the right rectangle covering the cactus (11 * 70)
@@ -68,7 +69,7 @@ public class Cactus extends TRex
             }
             catch(InterruptedException e)
             {
-                System.out.println(Thread.currentThread().getName() + " interrupted \t(At time " + System.currentTimeMillis() + ")");
+                System.out.println(Thread.currentThread().getName() + " interrupted \t(At time " + System.currentTimeMillis() + ")");          //object will catch InterruptedExveption if it is asked to sleep while being interrupted
                 return;
             }
 
@@ -82,6 +83,7 @@ public class Cactus extends TRex
             areaCenter = new Area(rectangleCenter.getBounds());
             areaRight = new Area(rectangleRight.getBounds());
 
+            //to check whether the trex has collide with the cactus
             if(super.getLeftArea().intersects(areaLeft.getBounds2D()) 
                 || super.getLeftArea().intersects(areaCenter.getBounds2D()) 
                     || super.getLeftArea().intersects(areaRight.getBounds2D()) 
@@ -89,11 +91,11 @@ public class Cactus extends TRex
                             || super.getRightArea().intersects(areaCenter.getBounds2D()) 
                                 || super.getRightArea().intersects(areaRight.getBounds2D()))
             {
-                Thread.currentThread().interrupt();
-                Game.setGamingStatus();
+                Thread.currentThread().interrupt();         //interrupt current cactus' thread
+                Game.setGamingStatus();         //pause the central method begin() in class Game
                 Game.setEndTime(System.currentTimeMillis());
-                Frame.terminate();
-                TRex.terminate();
+                Frame.terminate();          //terminate the rest of the cactuses in the frame
+                TRex.terminate();           //terminate the trex
             }
         }
         
